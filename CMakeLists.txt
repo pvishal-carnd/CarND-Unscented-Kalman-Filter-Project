@@ -7,7 +7,7 @@ add_definitions(-std=c++11)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
-option(USE_SIMULATOR "Uses term2 simulator when ON. Else uses matplotlib interface" ON)
+option(USE_SIMULATOR "Uses term2 simulator when ON. Else uses matplotlib interface" OFF)
 
 if(USE_SIMULATOR)
 set(sources src/ukf.cpp src/main.cpp src/tools.cpp src/simconnect.cpp)
@@ -27,10 +27,10 @@ target_link_libraries(UnscentedKF z ssl uv uWS)
 
 else()
 
-set(sources src/ukf.cpp src/main.cpp src/tools.cpp src/mppconnect.cpp)
+set(sources src/ukf.cpp src/main.cpp src/tools.cpp src/mpconnect.cpp)
 add_executable(UnscentedKF ${sources})
 find_package(PythonLibs)
-target_include_directories(ExtendedKF PRIVATE ${PYTHON_INCLUDE_DIRS})
+target_include_directories(UnscentedKF PRIVATE ${PYTHON_INCLUDE_DIRS})
 target_link_libraries(UnscentedKF ${PYTHON_LIBRARIES})
 
 endif()
