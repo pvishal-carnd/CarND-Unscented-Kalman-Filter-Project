@@ -7,8 +7,10 @@ add_definitions(-std=c++11)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
-set(sources src/ukf.cpp src/main.cpp src/tools.cpp)
+option(USE_SIMULATOR "Uses term2 simulator when ON. Else uses matplotlib interface" ON)
 
+if(USE_SIMULATOR)
+set(sources src/ukf.cpp src/main.cpp src/tools.cpp src/simconnect.cpp)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
 
@@ -20,7 +22,15 @@ link_directories(/usr/local/Cellar/libuv/1*/lib)
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
 
-
 add_executable(UnscentedKF ${sources})
-
 target_link_libraries(UnscentedKF z ssl uv uWS)
+
+else()
+
+set(sources src/ukf.cpp src/main.cpp src/tools.cpp src/mppconnect.cpp)
+add_executable(UnscentedKF ${sources})
+find_package(PythonLibs)
+target_include_directories(ExtendedKF PRIVATE ${PYTHON_INCLUDE_DIRS})
+target_link_libraries(UnscentedKF ${PYTHON_LIBRARIES})
+
+endif()
