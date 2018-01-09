@@ -64,6 +64,9 @@ class UKF {
         ///* Augmented state dimension
         int n_aug_;
 
+        ///* Number of sigma points
+        int n_sig_;
+
         ///* Sigma point spreading parameter
         double lambda_;
 
@@ -75,6 +78,12 @@ class UKF {
 
         ///* Radar noise covariance matrix
         MatrixXd R_lidar_;
+
+        ///* NIS value for radar
+        double NIS_radar_;
+
+        ///* NIS value for lidar
+        double NIS_lidar_;
 
         /**
          * Constructor
@@ -117,7 +126,6 @@ class UKF {
          */
         void UpdateRadar(MeasurementPackage measPkg);
 
-        void UpdateCore_(MeasurementPackage measPkg, MatrixXd Z, int n_z);
+        void UpdateCore_(MeasurementPackage measPkg, MatrixXd Zsig, int n_z, MatrixXd R, double* NIS);
 };
-
 #endif /* UKF_H */
