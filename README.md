@@ -12,6 +12,7 @@ wrapper to draw plots.
 * uWebSockets
 
 ### Matplotlib depencies
+These dependencies are _not_ required for the default Simulator interface.
 * Python 2.7 headers (`sudo apt-get install python-dev`).
 The project should also work with Python 3 but this hasn't been tested.
 
@@ -35,6 +36,11 @@ If you're using the Matplotlib interface,
 4. Run it: `./UnscentedKF <path to data>`
 
 ### File structure
+1.`data/obj_pose-laser-radar-synthetic-input.txt`: The data file used
+2.`src/ukf.cpp`: The core implementation of the Unscented Kalman Filter
+3.`src/simconnect.cpp`: Interface with the Udacity simulator
+4.`src/mpconnect.cpp`: Interface with Matplotlib
+	
 
 ## Results and analysis
 
