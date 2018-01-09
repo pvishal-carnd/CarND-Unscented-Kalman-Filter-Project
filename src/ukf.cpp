@@ -9,7 +9,7 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using std::vector;
 
-#define EPS 0.0001
+#define EPS 0.001
 
 /**
  * Initializes Unscented Kalman filter
@@ -21,8 +21,8 @@ UKF::UKF() {
     use_radar_ = true;
     x_ = VectorXd(5);
     P_ = MatrixXd(5, 5);
-    std_a_ = 30;
-    std_yawdd_ = 30;
+    std_a_ = 1;
+    std_yawdd_ = 0.5;
 
     // Start don't tune
     std_laspx_ = 0.15;
@@ -284,21 +284,22 @@ void UKF::UpdateCore_(MeasurementPackage measPkg, MatrixXd Zsig, int n_z, Matrix
         x_diff(3) = NormalizeAngles(x_diff(3));
         Tc = Tc + weights_(i) * x_diff * z_diff.transpose();
     }
+
     // Measurements
     VectorXd z = measPkg.raw_measurements_;
     //Kalman gain K;
     MatrixXd K = Tc * S.inverse();
     // Residual
-    VectorXd z_diff = z - z_pred;
+    VectorXd z_res = z - z_pred;
     if (measPkg.sensor_type_ == MeasurementPackage::RADAR){ // Radar
         // Angle normalization
-        z_diff(1) = NormalizeAngles(z_diff(1));
+        z_res(1) = NormalizeAngles(z_res(1));
     }
     // Update state mean and covariance matrix
-    x_ = x_ + K * z_diff;
+    x_ = x_ + K * z_res;
     P_ = P_ - K * S * K.transpose();
 
     // Calculate NIS
-    *NIS = z.transpose() * S.inverse() * z;
+    *NIS = z_res.transpose() * S.inverse() * z_res;
 }
 

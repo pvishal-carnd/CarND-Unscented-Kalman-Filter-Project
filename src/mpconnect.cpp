@@ -117,13 +117,16 @@ int PltConnect(string in_file_name){
 
         double p_x = ukf.x_(0);
         double p_y = ukf.x_(1);
-        double v1  = ukf.x_(2);
-        double v2 = ukf.x_(3);
+        double v   = ukf.x_(2);
+        double yaw = ukf.x_(3);
+
+        double vx = cos(yaw)*v;
+        double vy = sin(yaw)*v;
 
         estimate(0) = p_x;
         estimate(1) = p_y;
-        estimate(2) = v1;
-        estimate(3) = v2;
+        estimate(2) = vx;
+        estimate(3) = vy;
 
         estimations.push_back(estimate);
 
@@ -185,12 +188,16 @@ int PltConnect(string in_file_name){
     plt::save("imgs/pwRmse.png");
 
     // Plot NIS
+    vector<double> threshLidar(500, 6);
+    vector<double> threshRadar(500, 7.8);
     plt::figure();
     plt::subplot(2,1,1);
     plt::plot(pNisRadar, "b");
+    plt::plot(threshRadar,"r--");
     plt::grid(1);
     plt::subplot(2,1,2);
     plt::plot(pNisLidar, "b");
+    plt::plot(threshLidar,"r--");
     plt::grid(1);
     //getchar();
     plt::show();
