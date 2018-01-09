@@ -7,7 +7,7 @@ add_definitions(-std=c++11)
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
-option(USE_SIMULATOR "Uses term2 simulator when ON. Else uses matplotlib interface" OFF)
+option(USE_SIMULATOR "Uses term2 simulator when ON. Else uses matplotlib interface" ON)
 
 if(USE_SIMULATOR)
     add_definitions(-DUSE_SIMULATOR)
