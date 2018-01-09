@@ -139,7 +139,6 @@ int PltConnect(string in_file_name){
         in_file_.close();
     }
 
-    //plt::subplot(2, 1, 1);
     plt::named_plot("Lidar", pLidarx, pLidary, "bo");
     plt::named_plot("Radar", pRadarx, pRadary, "go");
     plt::named_plot("Estimation", pEstx, pEsty, "r-");
@@ -148,6 +147,9 @@ int PltConnect(string in_file_name){
     plt::legend();
     //plt::named_plot("RMSE", pRmse, "b");
     plt::show();
+
+    // Plot the RMSEs
+    plt::subplot(4, 1, 1);
 
     return 0;
 }
