@@ -35,7 +35,8 @@ int PltConnect(string in_file_name){
     vector<double> pLidarx, pLidary;
     vector<double> pRadarx, pRadary;
     vector<double> pEstx, pEsty;
-    vector<double> pRmse;
+    vector<double> pRmsePx, pRmsePy, pRmseVx, pRmseVy;
+    vector<double> pNisRadar, pNisLidar;
 
     while (getline(in_file_, line)){
         string sensor_type;
@@ -130,7 +131,13 @@ int PltConnect(string in_file_name){
         pEsty.push_back(p_y);
 
         VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
-        pRmse.push_back(RMSE(0));
+        pRmsePx.push_back(RMSE(0));
+        pRmsePy.push_back(RMSE(1));
+        pRmseVx.push_back(RMSE(2));
+        pRmseVy.push_back(RMSE(3));
+
+        pNisRadar.push_back(ukf.NIS_radar_);
+        pNisLidar.push_back(ukf.NIS_lidar_);
         //cout << RMSE << endl;
         //cout << count << endl;
     }
@@ -139,17 +146,53 @@ int PltConnect(string in_file_name){
         in_file_.close();
     }
 
+    // Compare with the data
+    plt::figure();
     plt::named_plot("Lidar", pLidarx, pLidary, "bo");
     plt::named_plot("Radar", pRadarx, pRadary, "go");
     plt::named_plot("Estimation", pEstx, pEsty, "r-");
-    //plt::plot(pGrTruthx, pGrTruthy, "r-");
-    //plt::subplot(2,1,2);
+    plt::grid(1);
     plt::legend();
     //plt::named_plot("RMSE", pRmse, "b");
+    //plt::show(0);
+    plt::tight_layout();
+    plt::save("imgs/pwData.png");
+
+    //Compare with ground truth
+    plt::figure();
+    plt::named_plot("Ground truth", pGrTruthx, pGrTruthy, "r-");
+    plt::named_plot("Estimation", pEstx, pEsty, "b-");
+    plt::grid(1);
+    plt::legend();
+    //plt::show(0);
+    plt::tight_layout();
+    plt::save("imgs/pwGrTruth.png");
+
+    // Plot RMSEs
+    plt::figure();
+    plt::subplot(4,1,1);
+    plt::plot(pRmsePx, "b");
+    plt::grid(1);
+    plt::subplot(4,1,2);
+    plt::plot(pRmsePy, "b");
+    plt::grid(1);
+    plt::subplot(4,1,3);
+    plt::plot(pRmseVx, "b");
+    plt::grid(1);
+    plt::subplot(4,1,4);
+    plt::plot(pRmseVy, "b");
+    plt::grid(1);
+    plt::save("imgs/pwRmse.png");
+
+    // Plot NIS
+    plt::figure();
+    plt::subplot(2,1,1);
+    plt::plot(pNisRadar, "b");
+    plt::grid(1);
+    plt::subplot(2,1,2);
+    plt::plot(pNisLidar, "b");
+    plt::grid(1);
+    //getchar();
     plt::show();
-
-    // Plot the RMSEs
-    plt::subplot(4, 1, 1);
-
     return 0;
 }
