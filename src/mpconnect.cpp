@@ -34,7 +34,7 @@ int PltConnect(string in_file_name){
     vector<double> pGrTruthx, pGrTruthy;
     vector<double> pLidarx, pLidary;
     vector<double> pRadarx, pRadary;
-    vector<double> pEstx, pEsty;
+    vector<double> pEstx, pEsty, pEstvx, pEstvy, pEstphi;
     vector<double> pRmsePx, pRmsePy, pRmseVx, pRmseVy;
     vector<double> pNisRadar, pNisLidar;
 
@@ -156,36 +156,44 @@ int PltConnect(string in_file_name){
     plt::named_plot("Estimation", pEstx, pEsty, "r-");
     plt::grid(1);
     plt::legend();
-    //plt::named_plot("RMSE", pRmse, "b");
-    //plt::show(0);
-    plt::tight_layout();
+    plt::title("Raw and fused sensor data");
+    //plt::tight_layout();
     plt::save("imgs/pwData.png");
 
-    //Compare with ground truth
+    //Compare with ground truth (positions)
     plt::figure();
     plt::named_plot("Ground truth", pGrTruthx, pGrTruthy, "r-");
     plt::named_plot("Estimation", pEstx, pEsty, "b-");
     plt::grid(1);
     plt::legend();
     //plt::show(0);
-    plt::tight_layout();
-    plt::save("imgs/pwGrTruth.png");
+    //plt::tight_layout();
+    plt::title("Estimations vs the ground truth");
+    plt::save("imgs/pwGrTruthPos.png");
 
     // Plot RMSEs
     plt::figure();
     plt::subplot(4,1,1);
     plt::plot(pRmsePx, "b");
     plt::grid(1);
+    plt::title("RMSE: px");
+
     plt::subplot(4,1,2);
     plt::plot(pRmsePy, "b");
     plt::grid(1);
+    plt::title("RMSE: py");
+
     plt::subplot(4,1,3);
     plt::plot(pRmseVx, "b");
     plt::grid(1);
+    plt::title("RMSE: v");
+
     plt::subplot(4,1,4);
     plt::plot(pRmseVy, "b");
     plt::grid(1);
-    plt::save("imgs/pwRmse.png");
+    plt::title("RMSE: phi");
+    //plt::save("imgs/pwRmse.png");
+    plt::show();
 
     // Plot NIS
     vector<double> threshLidar(500, 6);
@@ -195,11 +203,13 @@ int PltConnect(string in_file_name){
     plt::plot(pNisRadar, "b");
     plt::plot(threshRadar,"r--");
     plt::grid(1);
+    plt::title("NIS: Radar");
     plt::subplot(2,1,2);
     plt::plot(pNisLidar, "b");
     plt::plot(threshLidar,"r--");
     plt::grid(1);
+    plt::title("NIS: Lidar");
     //getchar();
-    plt::show();
+    plt::save("imgs/pwNis.png");
     return 0;
 }

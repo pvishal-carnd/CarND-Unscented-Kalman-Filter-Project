@@ -66,10 +66,10 @@ void UKF::ProcessMeasurement(MeasurementPackage measPkg) {
     if (!is_initialized_) {
         // Initial covariance matrix
         P_ << 1, 0, 0, 0, 0,
-           0, 1, 0, 0, 0,
-           0, 0, 1, 0, 0,
-           0, 0, 0, 1, 0,
-           0, 0, 0, 0, 1;
+              0, 1, 0, 0, 0,
+              0, 0, 1, 0, 0,
+              0, 0, 0, 1, 0,
+              0, 0, 0, 0, 1;
         if (measPkg.sensor_type_ == MeasurementPackage::RADAR) {
             // Convert radar from polar to cartesian coordinates and initialize state.
             float rho = measPkg.raw_measurements_[0]; // range
@@ -78,19 +78,22 @@ void UKF::ProcessMeasurement(MeasurementPackage measPkg) {
             // Coordinates convertion from polar to cartesian
             float px = rho * cos(phi);
             float py = rho * sin(phi);
+
+            // Radar does not measure tangential velocity. We therefore initialize
+            // the filter with estimates the radial velocity
             float vx = rho_dot * cos(phi);
             float vy = rho_dot * sin(phi);
             float v  = sqrt(vx * vx + vy * vy);
             x_ << px, py, v, 0, 0;
         }
         else if (measPkg.sensor_type_ == MeasurementPackage::LASER) {
-            // We don't know velocities from the first measurement of the LIDAR, so, we use zeros
+            // We Initialize the state to Lidar measurements. Since Lidar does not provide
+            // velocity estimates, we initialize is arbitrarily to zero
             x_ << measPkg.raw_measurements_[0], measPkg.raw_measurements_[1], 0, 0, 0;
-            // Deal with the special case initialisation problems
-            if (fabs(x_(0)) < EPS and fabs(x_(1)) < EPS){
-                x_(0) = EPS;
-                x_(1) = EPS;
-            }
+
+            // We also initialize P to errors corresponding to Lidar measurement
+            P_(0,0) = 0.25;
+            P_(1,1) = 0.25;
         }
 
         // Initialize weights
