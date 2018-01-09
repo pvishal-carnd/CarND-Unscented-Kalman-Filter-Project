@@ -1,4 +1,4 @@
-# Unscented Kalman Filter Project Starter Code
+# The Unscented Kalman Filter 
 
 The code uses the Unscented Kalman Filter to estimate the state of a moving object 
 of interest with noisy lidar and radar measurements. This code was built and tested 
@@ -16,7 +16,7 @@ wrapper to draw plots.
 * uWebSockets
 
 ### Matplotlib depencies
-* Python 2.7 headers (`sudo apt-get install python-dev`)
+* Python 2.7 headers (`sudo apt-get install python-dev`).
 The project should also work with Python 3 but this hasn't been tested.
 
 ### Common dependencies
@@ -33,7 +33,7 @@ The project should also work with Python 3 but this hasn't been tested.
 
 If you're using the Matplotlib interface, 
 
-1. Clone this repo with `git clone --recurssive`
+1. Clone this repo with `git clone --recursive`
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake -DUSE_SIMULATOR=ON .. && make` 
 4. Run it: `./UnscentedKF <path to data>`
